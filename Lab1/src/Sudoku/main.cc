@@ -16,8 +16,9 @@ int64_t now()
 int main(int argc, char* argv[])
 {
   init_neighbors();
-
-  FILE* fp = fopen(argv[1], "r");
+  	
+//FILE* fp = fopen(argv[1], "r");
+  char t[20];
   char puzzle[128];
   int total_solved = 0;
   int total = 0;
@@ -30,28 +31,30 @@ int main(int argc, char* argv[])
     else if (argv[2][0] == 'd')
       solve = solve_sudoku_dancing_links;
   int64_t start = now();
-  while (fgets(puzzle, sizeof puzzle, fp) != NULL) {
-    if (strlen(puzzle) >= N) {
-      ++total;
-      input(puzzle);
-      init_cache();
-      //if (solve_sudoku_min_arity_cache(0)) {
-      //if (solve_sudoku_min_arity(0))
-      //if (solve_sudoku_basic(0)) {
-      if (solve(0)) {
-        ++total_solved;
-        if (!solved())
-          assert(0);
-      }
-      else {
-        printf("No: %s", puzzle);
-      }
-    }
-  }
+  while(scanf("%s",t)!=EOF){
+	FILE* fp=fopen(t,"r");
+  	while (fgets(puzzle, sizeof puzzle, fp) != NULL) {
+    	if (strlen(puzzle) >= N) {
+     	 ++total;
+     	 input(puzzle);
+     	 init_cache();
+      	//if (solve_sudoku_min_arity_cache(0)) {
+     	 //if (solve_sudoku_min_arity(0))
+      	//if (solve_sudoku_basic(0)) {
+      	if (solve(0)) {
+       	 ++total_solved;
+       	 if (!solved())
+        	  assert(0);
+    	  }
+      	else {
+      	  printf("No: %s", puzzle);
+      	}
+    	}
+ 	}
   int64_t end = now();
   double sec = (end-start)/1000000.0;
   printf("%f sec %f ms each %d\n", sec, 1000*sec/total, total_solved);
-
+  }
   return 0;
 }
 
