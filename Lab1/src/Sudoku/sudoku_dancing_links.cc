@@ -2,7 +2,7 @@
 #include <memory.h>
 #include <map>
 #include <vector>
-
+#include <stdio.h>
 #include "sudoku.h"
 using namespace std;
 
@@ -195,6 +195,10 @@ struct Dance
 
     bool solve()
     {
+	//for(int i=0;i<81;i++){
+           //printf("%d",inout_[i]);
+           //                  }
+           //printf("\n");
         if (root_->left == root_) {
             for (size_t i = 0; i < stack_.size(); ++i) {
                 Node* n = stack_[i];
@@ -222,15 +226,21 @@ struct Dance
                 cover(j->col);
             }
             if (solve()) {
+           //for(int i=0;i<81;i++){
+           //printf("%d",inout_[i]);
+           //                  }
+           //printf("\n");
                 return true;
             }
             stack_.pop_back();
             for (Node* j = row->left; j != row; j = j->left) {
                 uncover(j->col);
             }
+
         }
         uncover(col);
         return false;
+
     }
 
     void put_left(Column* old, Column* nnew)
@@ -254,6 +264,11 @@ struct Dance
 
 bool solve_sudoku_dancing_links(int unused)
 {
+           for(int i=0;i<81;i++){
+           printf("%d",board[i]);
+                             }
+           printf("\n");
   Dance d(board);
   return d.solve();
+
 }
