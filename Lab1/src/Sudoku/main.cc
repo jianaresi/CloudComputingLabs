@@ -15,9 +15,11 @@ int64_t now()
 
 int main(int argc, char* argv[])
 {
+  char fileName[128];
+  while(scanf("%s",fileName)!=EOF){
   init_neighbors();
 
-  FILE* fp = fopen(argv[1], "r");
+  FILE* fp = fopen(fileName, "r");
   char puzzle[128];
   int total_solved = 0;
   int total = 0;
@@ -35,6 +37,10 @@ int main(int argc, char* argv[])
         ++total_solved;
         if (!solved())
           assert(0);
+           for(int i=0;i<81;i++){
+           printf("%d",board[i]);
+                             }
+           printf("\n");
       }
       else {
         printf("No: %s", puzzle);
@@ -44,7 +50,7 @@ int main(int argc, char* argv[])
   int64_t end = now();
   double sec = (end-start)/1000000.0;
   printf("%f sec %f ms each %d\n", sec, 1000*sec/total, total_solved);
-
+  }
   return 0;
 }
 
