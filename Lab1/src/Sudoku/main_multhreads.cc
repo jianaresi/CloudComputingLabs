@@ -2,9 +2,19 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <sys/time.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <pthread.h>
+#include <sys/stat.h>
+#include <time.h>
 
 #include "sudoku.h"
+
+pthread_mutex_t jobQueueMutex=PTHREAD_MUTEX_INITIALIZER;
+char *fileText=NULL;
+long currentPos=0;
 
 int64_t now()
 {
@@ -12,37 +22,78 @@ int64_t now()
   gettimeofday(&tv, NULL);
   return tv.tv_sec * 1000000 + tv.tv_usec;
 }
+typedef struct {
+  char chrBuff[128];
+} ThreadParas;
+char* textFileRead(char* filename)
+{
+	char* text;
+	FILE *pf = fopen(filename,"r");
+	fseek(pf,0,SEEK_END);
+	long lSize = ftell(pf);
+	// 用完后需要将内存free掉
+	text=(char*)malloc(lSize+1);
+	rewind(pf); 
+	int i=fread(text,sizeof(char),lSize,pf);
+	text[lSize] = '\0';
+	return text;
+}
+int recvAJob(ThreadParas *my){
+	char chrBuff[128];
+	pthread_mutex_lock(&jobQueueMutex);
+	int i=currentPos,n=0;
+	while(1){
+		if(fileText[i]=='\0'){
+			chrBuff[n]='\0';
+			pthread_mutex_unlock(&jobQueueMutex);
+			return -1;
+		}
+		if(fileText[i]=='\n'){
+			chrBuff[n]='\0';
+			break;
+		}
+		chrBuff[n]=fileText[i];
+		n++;i++;
+		
+	}
+	currentPos+=n+1;
+	strcpy(my->chrBuff,chrBuff);
+  pthread_mutex_unlock(&jobQueueMutex);
+  return 0;
+}
+void* sudokuSlove(void *args){
+	
+}
 
 int main(int argc, char* argv[])
 {
-	char fileName[128];
+	int threadsNum=1;
+	if(argc==3){
+		fileText=textFileRead(argv[1]);
+		threadsNum=atoi(argv[2]);
+	}
+	else{
+		printf("Please enter the correct number of parameters\n");
+		exit(1);
+	}
+	pthread_t th[threadsNum];
+	
+	
+	/*char fileName[128];//storage one file's name 
 	while(scanf("%s",fileName)!=EOF){
   	init_neighbors();
 		FILE* fp =fopen(fileName,"r");
-  	//FILE* fp = fopen(argv[1], "r");
   	char puzzle[128];
   	int total_solved = 0;
   	int total = 0;
   	bool (*solve)(int) = solve_sudoku_basic;
   	solve=solve_sudoku_dancing_links;
-  	/*
-  	if (argv[2] != NULL)
-    if (argv[2][0] == 'a')
-      solve = solve_sudoku_min_arity;
-    else if (argv[2][0] == 'c')
-      solve = solve_sudoku_min_arity_cache;
-    else if (argv[2][0] == 'd')
-      solve = solve_sudoku_dancing_links;
-   	*/
   	int64_t start = now();
   	while (fgets(puzzle, sizeof puzzle, fp) != NULL) {
     	if (strlen(puzzle) >= N) {
       	++total;
       	input(puzzle);
       	init_cache();
-      	//if (solve_sudoku_min_arity_cache(0)) {
-      	//if (solve_sudoku_min_arity(0))
-      	//if (solve_sudoku_basic(0)) {
       	if (solve(0)) {
         	++total_solved;
         	if (!solved())
@@ -57,6 +108,7 @@ int main(int argc, char* argv[])
   	double sec = (end-start)/1000000.0;
   	printf("%f sec %f ms each %d\n", sec, 1000*sec/total, total_solved);
 	}
+	*/
   	return 0;
 }
 
