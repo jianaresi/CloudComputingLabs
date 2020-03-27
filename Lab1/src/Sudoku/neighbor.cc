@@ -82,6 +82,7 @@ bool solved()
     int occurs[10] = { 0 };
     for (int col = 0; col < COL; ++col) {
       int val = chess[row][col];
+      if(!(1 <= val && val <= NUM)) printf("%d,%d,%d",row,col,val);
       assert(1 <= val && val <= NUM);
       ++occurs[val];
     }

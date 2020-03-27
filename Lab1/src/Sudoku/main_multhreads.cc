@@ -50,6 +50,7 @@ int recvAJob(ThreadParas *my){
 		}
 		if(fileText[i]=='\n'){
 			chrBuff[n]='\0';
+			if(strlen(chrBuff)==0) printf("!!!!!!!!");
 			break;
 		}
 		chrBuff[n]=fileText[i];
@@ -61,8 +62,29 @@ int recvAJob(ThreadParas *my){
   pthread_mutex_unlock(&jobQueueMutex);
   return 0;
 }
+void processAJob(ThreadParas *my){
+	bool (*solve)(int) = solve_sudoku_basic;
+  solve=solve_sudoku_dancing_links;
+  if (strlen(my->chrBuff) >= N) {
+     input(my->chrBuff);
+     init_cache();
+     if (solve(0)) {
+     	 printf("Right: %s\n",my->chrBuff);
+     if (!solved())
+       assert(0);
+     }
+     else {
+       printf("Wrong: %s\n", my->chrBuff);
+     }
+  }
+}	
 void* sudokuSlove(void *args){
-	
+	while(1){
+		ThreadParas my;
+		int nflag=recvAJob(&my);
+		if(nflag==-1) break;
+		processAJob(&my);
+	}
 }
 
 int main(int argc, char* argv[])
@@ -77,8 +99,17 @@ int main(int argc, char* argv[])
 		exit(1);
 	}
 	pthread_t th[threadsNum];
-	
-	
+	for(int i=0;i<threadsNum;i++)
+  {
+    if(pthread_create(&th[i], NULL, sudokuSlove, NULL)!=0)
+    {
+      perror("pthread_create failed");
+      exit(1);
+    }
+  }
+	for(int i=0;i<threadsNum;i++)
+    pthread_join(th[i], NULL);
+  free(fileText);
 	/*char fileName[128];//storage one file's name 
 	while(scanf("%s",fileName)!=EOF){
   	init_neighbors();
@@ -109,6 +140,6 @@ int main(int argc, char* argv[])
   	printf("%f sec %f ms each %d\n", sec, 1000*sec/total, total_solved);
 	}
 	*/
-  	return 0;
+  return 0;
 }
 
