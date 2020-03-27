@@ -1,3 +1,21 @@
 A backtracking sudoku solver, four algorithms are shown.
 
 test cases are from http://people.csse.uwa.edu.au/gordon/sudokumin.php
+
+新增文件说明：
+main_multhreds.cc:多线程部分主函数
+sudokumul.h：多线程部分的头文件
+sudokumul_dancing_link.cc:dancing_link算法的多线程版本（主要将输出从全局变量改为函数参数）
+
+代码执行说明：
+ 1.make
+ 2.可执行程序 sudoku:原代码版本 sudoku_multhreads:多线程版本
+ 
+ 多线程版本说明:
+ 运行程序需要加上参数，第一个参数是文件路径，第二个参数是线程个数
+ eg:  ./sudoku_multhreads test1000 3
+ 
+ 多线程框架：动态的分配任务+同构的线程+固定的线程个数（用户指定）
+ 
+ 详细说明见代码
+ 
