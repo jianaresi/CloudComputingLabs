@@ -11,8 +11,11 @@
 #include <time.h>
 
 #include "sudokumul.h"
+//Store the contents of the file
 char (*fileContent)[N];
+//Store the corresponding results
 int (*result)[N];
+//Total number of tasks
 int jobNum=0;
 int nextJobToBeDone=0;
 
@@ -24,9 +27,11 @@ int64_t now()
   gettimeofday(&tv, NULL);
   return tv.tv_sec * 1000000 + tv.tv_usec;
 }
+//Stores the results of each thread
 typedef struct {
   int myboard[N];
 } ThreadParas;
+//Converts the Input Char to an int
 void input(const char in[N],int *board){
   for (int cell = 0; cell < N; ++cell) {
     board[cell] = in[cell] - '0';
@@ -42,7 +47,7 @@ void readFile(char *path){
 	if(DEBUG_MODE)printf("%d\n",jobNum);
 	fileContent=(char (*)[N])malloc(jobNum*N*sizeof(int));
 	result=(int (*)[N])malloc(jobNum*N*sizeof(int));
-	rewind(fp); 
+	rewind(fp); //The file pointer redirects to the file header
 	int j=0;
 	while (fgets(puzzle, sizeof puzzle, fp) != NULL) {
 		strcpy(fileContent[j],puzzle);
@@ -50,6 +55,7 @@ void readFile(char *path){
 	}
 	fclose(fp);
 }
+//Get the task number that the thread needs to do
 int recvAJob(){
 	int currentJobID=0;
   pthread_mutex_lock(&jobQueueMutex);
@@ -75,7 +81,7 @@ void* sudokuSlove(void *args){
   	solve_sudoku_dancing_links(para->myboard,0);
   	//if(DEBUG_MODE)printf("The result:");
   	for(int i=0;i<N;i++){
-  		result[currentJobID][i]=para->myboard[i];
+  		result[currentJobID][i]=para->myboard[i];//Store the results in the appropriate location
   		//if(DEBUG_MODE)printf("%d",result[currentJobID][i]);
   	}
   	if(DEBUG_MODE)printf("\n");
@@ -105,10 +111,11 @@ int main(int argc, char* argv[])
   }
 	for(int i=0;i<threadsNum;i++)
     pthread_join(th[i], NULL);
- 	
+ 	// Free Memory		
   free(fileContent);
   free(result);
 
   return 0;
 }
+
 
