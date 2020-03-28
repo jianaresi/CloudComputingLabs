@@ -264,10 +264,10 @@ struct Dance
 
 bool solve_sudoku_dancing_links(int unused)
 {
-           for(int i=0;i<81;i++){
-           printf("%d",board[i]);
-                             }
-           printf("\n");
+  //         for(int i=0;i<81;i++){
+  //         printf("%d",board[i]);
+//                             }
+//           printf("\n");
   Dance d(board);
   return d.solve();
 
