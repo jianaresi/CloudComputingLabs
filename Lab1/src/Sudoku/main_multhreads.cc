@@ -76,7 +76,7 @@ void* sudokuSlove(void *args){
 		currentJobID=recvAJob();  
 		if(currentJobID==-1)//All job done!
       break;    
-  	if(DEBUG_MODE)printf("thread:[%ld],job:[%d]", pthread_self(),currentJobID);
+//  	if(DEBUG_MODE)printf("thread:[%ld],job:[%d]", pthread_self(),currentJobID);
   	input(fileContent[currentJobID],para->myboard);
   	solve_sudoku_dancing_links(para->myboard,0);
   	//if(DEBUG_MODE)printf("The result:");
@@ -84,13 +84,14 @@ void* sudokuSlove(void *args){
   		result[currentJobID][i]=para->myboard[i];//Store the results in the appropriate location
   		//if(DEBUG_MODE)printf("%d",result[currentJobID][i]);
   	}
-  	if(DEBUG_MODE)printf("\n");
+//  	if(DEBUG_MODE)printf("\n");
   }
 }
 
 int main(int argc, char* argv[])
 {
 	int threadsNum=1;
+        int64_t start = now();
 	if(argc==3){
 		readFile(argv[1]);
 		threadsNum=atoi(argv[2]);
@@ -111,7 +112,19 @@ int main(int argc, char* argv[])
   }
 	for(int i=0;i<threadsNum;i++)
     pthread_join(th[i], NULL);
- 	// Free Memory		
+ 	// Free Memory	
+  FILE * out;
+ out = fopen( "multhreadoutput.txt", "w" );	
+for(int i=0;i<jobNum;i++)
+{
+for(int j=0;j<N;j++){
+fprintf(out,"%d",result[i][j]);
+}
+  fprintf(out,"\n");
+}
+  int64_t end = now();
+  double sec = (end-start)/1000000.0;
+  printf("%f sec %f ms each %d\n", sec, 1000*sec/jobNum, jobNum);
   free(fileContent);
   free(result);
 
