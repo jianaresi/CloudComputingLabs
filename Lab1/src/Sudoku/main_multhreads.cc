@@ -95,8 +95,8 @@ int main(int argc, char* argv[])
         scanf("%s",fileName);
         int64_t start = now();
         readFile(fileName);
-        threadsNum=sysconf(_SC_NPROCESSORS_CONF);
-//        threadsNum=sysconf(_SC_NPROCESSORS_ONLN);
+//        threadsNum=sysconf(_SC_NPROCESSORS_CONF);
+        threadsNum=sysconf(_SC_NPROCESSORS_ONLN);
 	printf("%d",threadsNum);
         printf("\n");
 //	if(argc==3){
