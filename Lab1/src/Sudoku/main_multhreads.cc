@@ -9,7 +9,7 @@
 #include <pthread.h>
 #include <sys/stat.h>
 #include <time.h>
-
+#include<unistd.h>
 #include "sudokumul.h"
 //Store the contents of the file
 char (*fileContent)[N];
@@ -44,7 +44,7 @@ void readFile(char *path){
 	while (fgets(puzzle, sizeof puzzle, fp) != NULL) {
 		jobNum++;
 	}
-	if(DEBUG_MODE)printf("%d\n",jobNum);
+//	if(DEBUG_MODE)printf("%d\n",jobNum);
 	fileContent=(char (*)[N])malloc(jobNum*N*sizeof(int));
 	result=(int (*)[N])malloc(jobNum*N*sizeof(int));
 	rewind(fp); //The file pointer redirects to the file header
@@ -91,15 +91,22 @@ void* sudokuSlove(void *args){
 int main(int argc, char* argv[])
 {
 	int threadsNum=1;
+        char fileName[128];
+        scanf("%s",fileName);
         int64_t start = now();
-	if(argc==3){
-		readFile(argv[1]);
-		threadsNum=atoi(argv[2]);
-	}
-	else{
-		printf("Please enter the correct number of parameters\n");
-		exit(1);
-	}
+        readFile(fileName);
+        threadsNum=sysconf(_SC_NPROCESSORS_CONF);
+//        threadsNum=sysconf(_SC_NPROCESSORS_ONLN);
+	printf("%d",threadsNum);
+        printf("\n");
+//	if(argc==3){
+//		readFile(argv[1]);
+//		threadsNum=atoi(argv[2]);
+//	}
+//	else{
+//		printf("Please enter the correct number of parameters\n");
+//		exit(1);
+//	}
 	pthread_t th[threadsNum];
 	ThreadParas thPara[threadsNum];
 	for(int i=0;i<threadsNum;i++)
@@ -127,7 +134,6 @@ fprintf(out,"%d",result[i][j]);
   printf("%f sec %f ms each %d\n", sec, 1000*sec/jobNum, jobNum);
   free(fileContent);
   free(result);
-
   return 0;
 }
 
