@@ -1,6 +1,3 @@
-A backtracking sudoku solver, four algorithms are shown.
-
-test cases are from http://people.csse.uwa.edu.au/gordon/sudokumin.php
 
 新增文件说明：
 main_multhreds.cc:多线程部分主函数
@@ -9,13 +6,13 @@ sudokumul_dancing_link.cc:dancing_link算法的多线程版本（主要将输出
 
 代码执行说明：
  1.make
- 2.可执行程序 sudoku:原代码版本 sudoku_multhreads:多线程版本
+ 2.可执行程序 sudoku:原代码版本 
+	sudoku_slove:多线程版本，线程个数会动态检测目标机器上核数目进行分配。（即实验要求版本）
  
- 多线程版本说明:
- 运行程序需要加上参数，第一个参数是文件路径，第二个参数是线程个数
- eg:  ./sudoku_multhreads test1000 3
- 
- 多线程框架：动态的分配任务+同构的线程+固定的线程个数（用户指定）
- 
+运行说明:
+./sudoku_slove便可执行，输出结果打印到屏幕，也可重定向输出到文件中，例如./sudoku_slove > output1
+程序运行后可以输入输入文件名，输入文件可输入多个，程序输入EOF停止读入。
+注：默认不显示时间，如果需要显示原代码时间需打开sudoku.h修改const bool DEBUG_TIME 为true，如果需要显示多线程版本花费时间需打开sudokumul.h修改const bool DEBUG_MODE 为 true;
+
  详细说明见代码
  
