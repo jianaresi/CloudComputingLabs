@@ -94,7 +94,9 @@ int main(int argc, char* argv[])
   threadsNum=sysconf(_SC_NPROCESSORS_ONLN);
 	pthread_t th[threadsNum];
 	ThreadParas thPara[threadsNum];
+	int64_t start;
 	while(scanf("%s",fileName)!=EOF){
+		if(DEBUG_MODE) start = now();
 		jobNum=0;
 		nextJobToBeDone=0;
   	readFile(fileName);
@@ -120,6 +122,11 @@ int main(int argc, char* argv[])
 		// Free Memory	
   	free(fileContent);
   	free(result);
+  	if(DEBUG_MODE) {
+ 			int64_t end=now();
+ 			double sec = (end-start)/1000000.0;
+  		printf("use %f sec\n",sec);
+  	}
   }
   return 0;
 }

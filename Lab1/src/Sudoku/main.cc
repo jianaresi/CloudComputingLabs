@@ -18,13 +18,13 @@ int main(int argc, char* argv[])
   char fileName[128];
   while(scanf("%s",fileName)!=EOF){
   	init_neighbors();
-
   	FILE* fp = fopen(fileName, "r");
   	char puzzle[128];
   	int total_solved = 0;
   	int total = 0;
   	bool (*solve)(int) = solve = solve_sudoku_dancing_links;
-  	int64_t start = now();
+  	int64_t start;
+  	if(DEBUG_MODE) start= now();
   	while (fgets(puzzle, sizeof puzzle, fp) != NULL) {
     	if (strlen(puzzle) >= N) {
       	++total;
@@ -44,6 +44,11 @@ int main(int argc, char* argv[])
       	printf("No: %s", puzzle);
    		}
  		}
+ 		if(DEBUG_MODE) {
+ 			int64_t end=now();
+ 			double sec = (end-start)/1000000.0;
+  		printf("use %f sec\n",sec);
+  	}
   }
   return 0;
 }
