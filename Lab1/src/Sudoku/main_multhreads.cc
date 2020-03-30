@@ -69,6 +69,7 @@ int recvAJob(){
   pthread_mutex_unlock(&jobQueueMutex);
   return currentJobID;
 }
+//the sudoku_slove function
 void* sudokuSlove(void *args){
 	ThreadParas* para = (ThreadParas*) args; 
 	int currentJobID=0;
@@ -79,61 +80,47 @@ void* sudokuSlove(void *args){
 //  	if(DEBUG_MODE)printf("thread:[%ld],job:[%d]", pthread_self(),currentJobID);
   	input(fileContent[currentJobID],para->myboard);
   	solve_sudoku_dancing_links(para->myboard,0);
-  	//if(DEBUG_MODE)printf("The result:");
   	for(int i=0;i<N;i++){
   		result[currentJobID][i]=para->myboard[i];//Store the results in the appropriate location
-  		//if(DEBUG_MODE)printf("%d",result[currentJobID][i]);
   	}
-//  	if(DEBUG_MODE)printf("\n");
   }
 }
 
 int main(int argc, char* argv[])
 {
 	int threadsNum=1;
-        char fileName[128];
-        scanf("%s",fileName);
-        int64_t start = now();
-        readFile(fileName);
-//        threadsNum=sysconf(_SC_NPROCESSORS_CONF);
-        threadsNum=sysconf(_SC_NPROCESSORS_ONLN);
-	printf("%d",threadsNum);
-        printf("\n");
-//	if(argc==3){
-//		readFile(argv[1]);
-//		threadsNum=atoi(argv[2]);
-//	}
-//	else{
-//		printf("Please enter the correct number of parameters\n");
-//		exit(1);
-//	}
+  char fileName[128];
+  
+  threadsNum=sysconf(_SC_NPROCESSORS_ONLN);
 	pthread_t th[threadsNum];
 	ThreadParas thPara[threadsNum];
-	for(int i=0;i<threadsNum;i++)
-  {
-    if(pthread_create(&th[i], NULL, sudokuSlove,&thPara[i])!=0)
-    {
-      perror("pthread_create failed");
-      exit(1);
-    }
+	while(scanf("%s",fileName)!=EOF){
+		jobNum=0;
+		nextJobToBeDone=0;
+  	readFile(fileName);
+		for(int i=0;i<threadsNum;i++)
+  	{
+    	if(pthread_create(&th[i], NULL, sudokuSlove,&thPara[i])!=0)
+    	{
+      	perror("pthread_create failed");
+      	exit(1);
+    	}
+  	}
+  	//wait all threads end
+		for(int i=0;i<threadsNum;i++)
+    	pthread_join(th[i], NULL);
+ 		//the output
+		for(int i=0;i<jobNum;i++)
+		{
+			for(int j=0;j<N;j++){
+				fprintf(stdout,"%d",result[i][j]);
+			}
+  		fprintf(stdout,"\n");
+		}
+		// Free Memory	
+  	free(fileContent);
+  	free(result);
   }
-	for(int i=0;i<threadsNum;i++)
-    pthread_join(th[i], NULL);
- 	// Free Memory	
-  FILE * out;
- out = fopen( "multhreadoutput.txt", "w" );	
-for(int i=0;i<jobNum;i++)
-{
-for(int j=0;j<N;j++){
-fprintf(out,"%d",result[i][j]);
-}
-  fprintf(out,"\n");
-}
-  int64_t end = now();
-  double sec = (end-start)/1000000.0;
-  printf("%f sec %f ms each %d\n", sec, 1000*sec/jobNum, jobNum);
-  free(fileContent);
-  free(result);
   return 0;
 }
 

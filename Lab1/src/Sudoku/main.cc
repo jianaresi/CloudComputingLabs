@@ -16,54 +16,35 @@ int64_t now()
 int main(int argc, char* argv[])
 {
   char fileName[128];
-  FILE * out;
-  out = fopen( "output.txt", "w" );
   while(scanf("%s",fileName)!=EOF){
-  init_neighbors();
+  	init_neighbors();
 
-  FILE* fp = fopen(fileName, "r");
-  char puzzle[128];
-  int total_solved = 0;
-  int total = 0;
-  bool (*solve)(int) = solve = solve_sudoku_dancing_links;
-  int64_t start = now();
-  while (fgets(puzzle, sizeof puzzle, fp) != NULL) {
-    if (strlen(puzzle) >= N) {
-      ++total;
-      input(puzzle);
-      init_cache();
-//           for(int i=0;i<81;i++){
-//           if( out != NULL ){
-//           fprintf(out,"%d",board[i]);
-//                             }  
-//                                }
-//           fprintf(out,"\n"); 
-      //if (solve_sudoku_min_arity_cache(0)) {
-      //if (solve_sudoku_min_arity(0))
-      //if (solve_sudoku_basic(0)) {
-      if (solve(0)) {
-        ++total_solved;
-        if (!solved())
-          assert(0);
-//         fprintf( out, "Hello %s\n", name );
-           for(int i=0;i<81;i++){
-//           if( out != NULL ){
-           fprintf(out,"%d",board[i]);
-//                             }
-                                 }
-           fprintf(out,"\n");   
-          fflush(out);
-      }
-      else {
-        printf("No: %s", puzzle);
-      }
-    }
+  	FILE* fp = fopen(fileName, "r");
+  	char puzzle[128];
+  	int total_solved = 0;
+  	int total = 0;
+  	bool (*solve)(int) = solve = solve_sudoku_dancing_links;
+  	int64_t start = now();
+  	while (fgets(puzzle, sizeof puzzle, fp) != NULL) {
+    	if (strlen(puzzle) >= N) {
+      	++total;
+      	input(puzzle);
+      	init_cache();
+      	if (solve(0)) {
+        	++total_solved;
+        	if (!solved())
+          	assert(0);
+          	for(int i=0;i<81;i++){
+          		fprintf(stdout,"%d",board[i]);
+          	}
+    		}
+      	fprintf(stdout,"\n");   
+   		}
+   		else {
+      	printf("No: %s", puzzle);
+   		}
+ 		}
   }
-  int64_t end = now();
-  double sec = (end-start)/1000000.0;
-  printf("%f sec %f ms each %d\n", sec, 1000*sec/total, total_solved);
-  }
-  fclose (out);
   return 0;
 }
 
