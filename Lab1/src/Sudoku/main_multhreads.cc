@@ -125,9 +125,10 @@ int main(int argc, char* argv[])
   	if(DEBUG_MODE) {
  			int64_t end=now();
  			double sec = (end-start)/1000000.0;
-  		printf("use %f sec\n",sec);
+  		fprintf(stderr,"use %f sec\n",sec);
   	}
-  }
+  	//int i=fflush(NULL);
+ }
   return 0;
 }
 
