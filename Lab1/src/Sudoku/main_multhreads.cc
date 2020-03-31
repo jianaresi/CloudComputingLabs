@@ -118,6 +118,8 @@ int main(int argc, char* argv[])
 				fprintf(stdout,"%d",result[i][j]);
 			}
   		fprintf(stdout,"\n");
+			fflush(stdout);
+
 		}
 		// Free Memory	
   	free(fileContent);
@@ -127,7 +129,7 @@ int main(int argc, char* argv[])
  			double sec = (end-start)/1000000.0;
   		fprintf(stderr,"use %f sec\n",sec);
   	}
-  	//int i=fflush(NULL);
+
  }
   return 0;
 }

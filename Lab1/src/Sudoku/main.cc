@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
   	int total = 0;
   	bool (*solve)(int) = solve = solve_sudoku_dancing_links;
   	int64_t start;
-  	if(DEBUG_MODE1) start= now();
+  	if(DEBUG_TIME) start= now();
   	while (fgets(puzzle, sizeof puzzle, fp) != NULL) {
     	if (strlen(puzzle) >= N) {
       	++total;
@@ -38,18 +38,19 @@ int main(int argc, char* argv[])
           		fprintf(stdout,"%d",board[i]);
           	}
     		}
-      	fprintf(stdout,"\n");   
+      	fprintf(stdout,"\n");  
+				fflush(stdout); 
    		}
    		else {
       	printf("No: %s", puzzle);
    		}
  		}
- 		if(DEBUG_MODE1) {
+ 		if(DEBUG_TIME) {
  			int64_t end=now();
  			double sec = (end-start)/1000000.0;
   		fprintf(stderr,"use %f sec\n",sec);
+//		fflush(stdout);
   	}
-  	//int i=fflush(NULL);
   }
   return 0;
 }
