@@ -8,7 +8,7 @@
 #include <iostream>
 
 #define STATIC_ROOT "."
-
+#define DEBUG false
 namespace swings {
 
 class Timer;

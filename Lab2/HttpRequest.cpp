@@ -76,13 +76,13 @@ int HttpRequest::parseRequest()
             } 
         } else if(state_ == ExpectBody) {
         		std:string tmp=getPath();
-        		std::cout<<"the path:"<<tmp<<std::endl;
+        		if(DEBUG)std::cout<<"the path:"<<tmp<<std::endl;
             if(getMethod()=="POST"&&tmp=="./Post_show"){
             	std::string body=inBuff_.retrieveAsString();
-            	std::cout<<"the body:"<<body<<std::endl;
+            	if(DEBUG)std::cout<<"the body:"<<body<<std::endl;
             	std::string name,id;
             	if(deal(body,name,id)&&ok==1){
-            		std::cout<<"Name:"<<name<<" ID:"<<id<<std::endl;
+            		if(DEBUG)std::cout<<"Name:"<<name<<" ID:"<<id<<std::endl;
             		setnameid(name,id);
             		ok=2;
             	}
