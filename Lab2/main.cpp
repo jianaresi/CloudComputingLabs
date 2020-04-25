@@ -16,6 +16,7 @@ int main(int argc, char** argv)
             {"ip",    required_argument, 0,  1 },
             {"port",  required_argument, 0,  2 },
             {"proxy", required_argument, 0,  3 },
+            {"number-thread", required_argument, 0,  4 },
             {0,       0,               0,  0 }
         };
        	c = getopt_long(argc, argv, "",
@@ -33,6 +34,8 @@ int main(int argc, char** argv)
         	case 3:
             	proxy=optarg;
             	break;
+            case 4:
+            	numThread=std::stoi(optarg);
        		case '?':
             	break;
  			
@@ -43,7 +46,8 @@ int main(int argc, char** argv)
     if(DEBUG){
     	std::cout<<"ip:"<<ip<<' ';
     	std::cout<<"port:"<<port<<' ';
-    	std::cout<<"proxy:"<<proxy<<std::endl;
+    	std::cout<<"proxy:"<<proxy<<' ';
+    	std::cout<<"number-thread:"<<numThread<<std::endl;
     }
 	swings::HttpServer server(std::stoi(port), numThread);
 	server.run();
