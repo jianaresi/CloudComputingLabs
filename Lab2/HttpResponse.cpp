@@ -52,20 +52,35 @@ Buffer HttpResponse::makeResponse()
 	}
 	else if(statusCode_ == 503){
 		std::string body="";
-		body+="<html><title>POST method</title><body bgcolor=fffff>";
+		body+="<html><title>POST method</title><body bgcolor=fffff>\n";
 		body+="Your Name: "+getname()+"\n";
 		body+="ID: "+getid()+"\n";
-		body+="<hr><em>Http Web server</em>";
-		body+="</body></html>";
+		body+="<hr><em>Http Web server</em>\n";
+		body+="</body></html>\n";
 		output.append("HTTP/1.1 200 OK\r\n");
     // 报文头
     	output.append("Server: My Server\r\n");
     	output.append("Content-type: text/html\r\n");
-    	output.append("Connection: close\r\n");
+    	//output.append("Connection: close\r\n");
     	output.append("Content-length: " + std::to_string(body.size()) + "\r\n\r\n");
     // 报文体
     	output.append(body);
 	}
+	else if(statusCode_ == 504){
+		std::string body="";
+		body += "<html><title>404 Not Found</title>";
+    	body += "<body bgcolor=\"ffffff\">\n";
+    	body +=  " Not Found\n";
+   		body += "<hr><em>HTTP Web server</em>\n</body></html>\n";
+		output.append("HTTP/1.1 404 Not Found\r\n");
+    	// 报文头
+    	output.append("Server: My Server\r\n");
+    	output.append("Content-type: text/html\r\n");
+    	//output.append("Connection: close\r\n");
+    	output.append("Content-length: " + std::to_string(body.size()) + "\r\n\r\n");
+    	// 报文体
+    	output.append(body);
+    }
     struct stat sbuf;
     // 文件找不到错误
     //std::cout<<"Name:"<<getname()<<"ID:"<<getid()<<std::endl;
@@ -102,12 +117,12 @@ void HttpResponse::doStaticRequest(Buffer& output, long fileSize)
     // 响应行
     output.append("HTTP/1.1 " + std::to_string(statusCode_) + " " + itr -> second + "\r\n");
     // 报文头
-    if(keepAlive_) {
+    /*if(keepAlive_) {
         output.append("Connection: Keep-Alive\r\n");
         output.append("Keep-Alive: timeout=" + std::to_string(CONNECT_TIMEOUT) + "\r\n");
     } else {
         output.append("Connection: close\r\n");
-    }
+    }*/
     output.append("Content-type: " + __getFileType() + "\r\n");
     output.append("Content-length: " + std::to_string(fileSize) + "\r\n");
     // TODO 添加头部Last-Modified: ?
@@ -158,19 +173,29 @@ void HttpResponse::doErrorResponse(Buffer& output, std::string message)
     auto itr = statusCode2Message.find(statusCode_);
     if(itr == statusCode2Message.end()) {
     }
-
-    body += "<html><title>Server Error</title>";
-    body += "<body bgcolor=\"ffffff\">";
-    body += std::to_string(statusCode_) + " : " + itr -> second + "\n";
-    body += "<p>" + message + "</p>";
-    body += "<hr><em>HTTP Web Server</em></body></html>";
-
+	switch(statusCode_){
+		case 404:
+    		body += "<html><title>404 Not Found</title>";
+    		body += "<body bgcolor=\"ffffff\">\n";
+    		body +=  " Not Found\n";
+    		body += "<p>Couldn't find this file:"+path_+ "</p>\n";
+   			body += "<hr><em>HTTP Web server</em>\n</body></html>\n";
+   			break;
+   		case 501:
+   			body += "<html><title>501 Not Implemented</title>";
+    		body += "<body bgcolor=\"ffffff\">\n";
+    		body +=  " Not Implemented\n";
+    		body += "<p>Doed not implemented this method:"+path_+ "</p>\n";
+   			body += "<hr><em>HTTP Web server</em>\n</body></html>\n";
+   			break;
+		
+	}
     // 响应行
     output.append("HTTP/1.1 " + std::to_string(statusCode_) + " " + itr -> second + "\r\n");
     // 报文头
     output.append("Server: My Server\r\n");
     output.append("Content-type: text/html\r\n");
-    output.append("Connection: close\r\n");
+    //output.append("Connection: close\r\n");
     output.append("Content-length: " + std::to_string(body.size()) + "\r\n\r\n");
     // 报文体
     output.append(body);

@@ -7,7 +7,7 @@
 #include <map>
 #include <iostream>
 
-#define STATIC_ROOT ""
+#define STATIC_ROOT "."
 
 namespace swings {
 
@@ -99,6 +99,7 @@ private:
     // 报文解析相关
     HttpRequestParseState state_; // 报文解析状态
     Method method_; // HTTP方法
+    std::string method_name_;
     Version version_; // HTTP版本
     std::string path_; // URL路径
     std::string query_; // URL参数

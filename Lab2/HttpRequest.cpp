@@ -77,7 +77,7 @@ int HttpRequest::parseRequest()
         } else if(state_ == ExpectBody) {
         		std:string tmp=getPath();
         		std::cout<<"the path:"<<tmp<<std::endl;
-            if(getMethod()=="POST"&&tmp=="/Post_show"){
+            if(getMethod()=="POST"&&tmp=="./Post_show"){
             	std::string body=inBuff_.retrieveAsString();
             	std::cout<<"the body:"<<body<<std::endl;
             	std::string name,id;
@@ -86,6 +86,7 @@ int HttpRequest::parseRequest()
             		setnameid(name,id);
             		ok=2;
             	}
+            	else ok=3;
             }
             else if(getMethod()=="POST") ok=3;
             state_ = GotAll;
@@ -136,7 +137,7 @@ bool HttpRequest::__setMethod(const char* start, const char* end)
         method_ = Post;
     else
         method_ = Invalid;
-
+	method_name_=m;
     return method_ != Invalid;
 }
 
@@ -160,7 +161,8 @@ std::string HttpRequest::getMethod() const
         res = "GET";
     else if(method_ == Post)
         res = "POST";
-    
+    else 
+    	res = method_name_;
     return res;
 }
 

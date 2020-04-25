@@ -140,7 +140,7 @@ void HttpServer::__doRequest(HttpRequest* request)
         	return;
         }
         else if(num==3){
-        	HttpResponse response(404, "", false,"","");
+        	HttpResponse response(504, "", false,"","");
         	request -> appendOutBuffer(response.makeResponse());
 
         	// XXX 立刻关闭连接了，所以就算没写完也只能写一次？
@@ -151,7 +151,7 @@ void HttpServer::__doRequest(HttpRequest* request)
         	return;
         }
         else{
-        	HttpResponse response(501, "", false,"","");
+        	HttpResponse response(501,request ->getMethod() , false,"","");
         	request -> appendOutBuffer(response.makeResponse());
 
         	// XXX 立刻关闭连接了，所以就算没写完也只能写一次？
