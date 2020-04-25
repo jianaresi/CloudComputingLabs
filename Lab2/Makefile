@@ -1,4 +1,4 @@
-EXE := server
+EXE := httpserver
 
 # wildcard扫描源文件
 sources := ${wildcard *.cpp}
