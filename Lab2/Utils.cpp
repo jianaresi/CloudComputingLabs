@@ -11,7 +11,7 @@
 
 using namespace swings;
 
-int utils::createListenFd(int port)
+int utils::createListenFd(in_addr ip,int port)
 {
     // 处理非法端口
     port = ((port <= 1024) || (port >= 65535)) ? 6666 : port;
@@ -34,7 +34,8 @@ int utils::createListenFd(int port)
     struct sockaddr_in serverAddr;
     ::bzero((char*)&serverAddr, sizeof(serverAddr));
     serverAddr.sin_family = AF_INET;
-    serverAddr.sin_addr.s_addr = ::htonl(INADDR_ANY);
+    //serverAddr.sin_addr.s_addr = ::htonl(INADDR_ANY);
+    serverAddr.sin_addr=ip;
     serverAddr.sin_port = ::htons((unsigned short)port);
     if(::bind(listenFd, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1) {
         printf("[Utils::createListenFd]fd = %d bind : %s\n", listenFd, strerror(errno));

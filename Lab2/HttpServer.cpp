@@ -17,9 +17,10 @@
 
 using namespace swings;
 
-HttpServer::HttpServer(int port, int numThread) 
+HttpServer::HttpServer(in_addr ip,int port, int numThread) 
     : port_(port),
-      listenFd_(utils::createListenFd(port_)),
+      ip_(ip),
+      listenFd_(utils::createListenFd(ip_,port_)),
       listenRequest_(new HttpRequest(listenFd_)),
       epoll_(new Epoll()),
       threadPool_(new ThreadPool(numThread)),

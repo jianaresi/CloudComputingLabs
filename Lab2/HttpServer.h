@@ -3,7 +3,7 @@
 
 #include <memory> // unique_ptr
 #include <mutex>
-
+#include <arpa/inet.h> // htonl, htons
 #define TIMEOUTMS -1 // epoll_wait超时时间，-1表示不设超时
 #define CONNECT_TIMEOUT 500 // 连接默认超时时间
 #define NUM_WORKERS 4 // 线程池大小
@@ -18,7 +18,7 @@ class TimerManager;
 
 class HttpServer {
 public:
-    HttpServer(int port, int numThread);
+    HttpServer(in_addr ip,int port, int numThread);
     ~HttpServer();
     void run(); // 启动HTTP服务器
     
@@ -35,6 +35,7 @@ private:
     using TimerManagerPtr = std::unique_ptr<TimerManager>;
 
     int port_; // 监听端口
+   	in_addr ip_;
     int listenFd_; // 监听套接字
     ListenRequestPtr listenRequest_; // 监听套接字的HttpRequest实例
     EpollPtr epoll_; // epoll实例

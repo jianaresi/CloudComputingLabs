@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <getopt.h>
+#include <arpa/inet.h> // htonl, htons
 #include <iostream>
 #define DEBUG false
 int main(int argc, char** argv)
@@ -49,7 +50,11 @@ int main(int argc, char** argv)
     	std::cout<<"proxy:"<<proxy<<' ';
     	std::cout<<"number-thread:"<<numThread<<std::endl;
     }
-	swings::HttpServer server(std::stoi(port), numThread);
+    const char* cs;
+    cs=ip.c_str();
+    in_addr ipAddr;
+    ipAddr.s_addr=inet_addr(cs);
+	swings::HttpServer server(ipAddr,std::stoi(port), numThread);
 	server.run();
 
 	return 0;
