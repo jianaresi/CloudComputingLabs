@@ -8,7 +8,7 @@
 int main(int argc, char** argv)
 {
 	int c,numThread=4,num=0;
-	std::string ip,port="6666",proxy;
+	std::string ip="127.0.0.1",port="6666",proxy;
     int digit_optind = 0;
     while (1) {
         int this_option_optind = optind ? optind : 1;
